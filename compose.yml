@@ -1,0 +1,58 @@
+services:
+  rarm_core:
+    build:
+      context: .
+      args:
+        USERNAME: rarm
+        USER_UID: ${UID:-1000}
+        USER_GID: ${GID:-1000}
+    image: ros2-humble-dev:latest
+    container_name: rarm_core
+    network_mode: host
+    ipc: host
+    pid: host
+    stdin_open: true
+    tty: true
+    working_dir: /app/ros_ws
+    # Numeric uid:gid so bind-mounted files have correct ownership.
+    # A username string (e.g. ${USER}) would fail if it isn't in the
+    # container's /etc/passwd.
+    # If ${UID} is not exported in your shell, run:
+    #   UID=$(id -u) GID=$(id -g) docker compose up
+    # or add UID and GID to a .env file in this directory.
+    user: "${UID:-1000}:${GID:-1000}"
+
+    environment:
+      - ROS_DOMAIN_ID=1
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+      - DISPLAY=:0
+      - LIBGL_ALWAYS_SOFTWARE=1
+
+    volumes:
+      # Only src/ is bind-mounted for live editing — /app/ros_ws/.pixi/ (the
+      # pre-installed ~1.5 GB env) lives alongside src/ and is never shadowed.
+      - ./ros_ws/src:/app/ros_ws/src
+
+      # Colcon build artifacts in named volumes: fast rebuilds and they survive
+      # container recreation without polluting the host checkout.
+      - colcon_build:/app/ros_ws/build
+      - colcon_install:/app/ros_ws/install
+      - colcon_log:/app/ros_ws/log
+
+      # External deps (MuJoCo assets, etc.) — read-only inside the container.
+      - ./deps:/opt/rarm_deps:ro
+
+      # X11 forwarding for rviz2 / rqt.
+      - /tmp/.X11-unix:/tmp/.X11-unix
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    # With ENTRYPOINT set in the Dockerfile, this becomes the argument passed
+    # to /entrypoint.sh, which execs it after activating the pixi environment.
+    command: /bin/bash
+
+volumes:
+  colcon_build:
+  colcon_install:
+  colcon_log:

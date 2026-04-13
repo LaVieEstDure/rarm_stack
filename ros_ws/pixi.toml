@@ -1,0 +1,22 @@
+[project]
+name = "rarm_ws"
+version = "0.1.0"
+description = "ROS 2 workspace for Rarmstack, installed via robostack."
+authors = ["Raghav Mishra"]
+channels = ["https://prefix.dev/robostack-humble", "conda-forge"]
+platforms = ["linux-64"]
+
+[dependencies]
+# ROS 2 Humble desktop: rclpy, rclcpp, rviz2, rqt, tf2, turtlesim, etc.
+ros-humble-desktop = "*"
+
+# Build toolchain for colcon / ament packages.
+colcon-common-extensions = "*"
+compilers = "*"
+cmake = "*"
+pkg-config = "*"
+make = "*"
+ninja = "*"
+
+[tasks]
+build = "colcon build --symlink-install"

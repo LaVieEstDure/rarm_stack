@@ -1,0 +1,9 @@
+# Exclude large generated dirs from the Docker build context.
+# The pixi env is rebuilt inside the image via the multi-stage install stage;
+# colcon artifacts are written to named volumes at runtime.
+ros_ws/.pixi/
+ros_ws/build/
+ros_ws/install/
+ros_ws/log/
+deps/
+src/
