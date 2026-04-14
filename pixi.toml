@@ -1,10 +1,11 @@
-[project]
+[workspace]
 name = "rarm_ws"
 version = "0.1.0"
 description = "ROS 2 workspace for Rarmstack, installed via robostack."
 authors = ["Raghav Mishra"]
 channels = ["https://prefix.dev/robostack-humble", "conda-forge"]
 platforms = ["linux-64"]
+preview = ["pixi-build"]
 
 [dependencies]
 # ROS 2 Humble desktop: rclpy, rclcpp, rviz2, rqt, tf2, turtlesim, etc.
@@ -17,6 +18,17 @@ cmake = "*"
 pkg-config = "*"
 make = "*"
 ninja = "*"
+
+# openarm deps
+ros-humble-controller-manager = "*"
+ros-humble-gripper-controllers = "*"
+ros-humble-hardware-interface = "*"
+ros-humble-joint-state-broadcaster = "*"
+ros-humble-joint-trajectory-controller = "*"
+ros-humble-xacro = "*"
+ros-humble-joint-state-publisher-gui = "*"
+
+openarm_can = { path = "./deps/openarm_can/" }
 
 [tasks]
 build = "colcon build --symlink-install"

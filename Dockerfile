@@ -43,6 +43,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     sudo \
     vim \
+    software-properties-common \
+    libgl1-mesa-dri \
+    libglx-mesa0 \
+    libegl-mesa0 \
+    libglu1-mesa \
+    && add-apt-repository -y ppa:openarm/main \
+    && apt-get update && apt-get install -y --no-install-recommends \
+    libopenarm-can-dev \
+    openarm-can-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Recreate non-root user. Ubuntu 24.04 ships a default `ubuntu` user at
@@ -59,11 +68,6 @@ COPY --from=install /usr/local/bin/pixi /usr/local/bin/pixi
 # Copy the pre-installed pixi environment and manifests. The ~1.5 GB env is
 # baked in here so container startup requires no network or solver activity.
 COPY --from=install --chown=$USER_UID:$USER_GID /app /app
-
-# Pre-create colcon output dirs so that when compose mounts named volumes at
-# these paths, Docker initialises the volumes from the image's directory
-# (uid 1000-owned) rather than creating root-owned mountpoints from scratch.
-RUN mkdir -p /app/ros_ws/build /app/ros_ws/install /app/ros_ws/log
 
 # Copy the generated environment activation entrypoint.
 COPY --from=install /entrypoint.sh /entrypoint.sh

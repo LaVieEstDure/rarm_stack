@@ -29,9 +29,8 @@ services:
       - LIBGL_ALWAYS_SOFTWARE=1
 
     volumes:
-      # Only src/ is bind-mounted for live editing — /app/ros_ws/.pixi/ (the
-      # pre-installed ~1.5 GB env) lives alongside src/ and is never shadowed.
-      - ./ros_ws/src:/app/ros_ws/src
+      # Pixi manifests for live editing of dependencies.
+      - .:/app
 
       # Colcon build artifacts in named volumes: fast rebuilds and they survive
       # container recreation without polluting the host checkout.
