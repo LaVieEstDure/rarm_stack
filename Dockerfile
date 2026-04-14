@@ -8,7 +8,9 @@ WORKDIR /app/ros_ws
 
 # Copy only the dependency manifests first for better layer caching.
 # Source code is not needed to install the conda/ROS environment.
-COPY ros_ws/pixi.toml ros_ws/pixi.lock ./
+COPY ./pixi.toml ./pixi.lock ./
+
+COPY ./deps/ ./deps/
 
 # Install all conda/ROS packages. The rattler cache mount avoids re-downloading
 # packages on rebuilds (sharing=private prevents cross-build contamination).
@@ -82,7 +84,7 @@ RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH=/home/$USERNAME/.local/bin:$PATH
 ENV SHELL=/bin/bash
 
-WORKDIR /app/ros_ws
+WORKDIR /app/
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/bash"]
