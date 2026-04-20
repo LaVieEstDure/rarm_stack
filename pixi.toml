@@ -3,16 +3,20 @@ name = "rarm_ws"
 version = "0.1.0"
 description = "ROS 2 workspace for Rarmstack, installed via robostack."
 authors = ["Raghav Mishra"]
-channels = ["https://prefix.dev/robostack-humble", "conda-forge"]
+channels = ["robostack-humble", "conda-forge"]
 platforms = ["linux-64"]
 preview = ["pixi-build"]
 
+[target.unix.activation]
+# For activation scripts, we use bash for Unix-like systems
+scripts = ["install/setup.bash"]
+
 [dependencies]
 # ROS 2 Humble desktop: rclpy, rclcpp, rviz2, rqt, tf2, turtlesim, etc.
-ros-humble-desktop = "*"
+ros-humble-desktop = ">=0.10.0,<0.11"
 
 # Build toolchain for colcon / ament packages.
-colcon-common-extensions = "*"
+colcon-common-extensions = ">=0.3.0,<0.4"
 compilers = "*"
 cmake = "*"
 pkg-config = "*"
@@ -20,6 +24,7 @@ make = "*"
 ninja = "*"
 
 # openarm deps
+ros-humble-ament-cmake = "*"
 ros-humble-controller-manager = "*"
 ros-humble-gripper-controllers = "*"
 ros-humble-hardware-interface = "*"
@@ -27,8 +32,24 @@ ros-humble-joint-state-broadcaster = "*"
 ros-humble-joint-trajectory-controller = "*"
 ros-humble-xacro = "*"
 ros-humble-joint-state-publisher-gui = "*"
+ros-humble-ros2-control-test-assets = "*"
+ros-humble-moveit-configs-utils = "*"
+ros-humble-moveit-ros-move-group = "*"
+ros-humble-moveit-ros-visualization = "*"
+ros-humble-moveit-planners-ompl = "*"
+ros-humble-moveit-planners = "*"
+ros-humble-pilz-industrial-motion-planner = "*"
+ros-humble-moveit-ros-perception = "*"
+ros-humble-moveit-simple-controller-manager = "*"
 
-openarm_can = { path = "./deps/openarm_can/" }
+# ros-humble-openarm-can = { path = "./ros_ws/src/openarm_can/package.xml" }
+# ros-humble-openarm-description = { path = "./ros_ws/src/openarm_description/package.xml" }
+# # ros-humble-openarm = { path = "./ros_ws/src/openarm_ros2/openarm/package.xml" }
+# ros-humble-openarm-bringup = { path = "./ros_ws/src/openarm_ros2/openarm_bringup/package.xml" }
+# ros-humble-openarm-bimanual-moveit-config = { path = "./ros_ws/src/openarm_ros2/openarm_bimanual_moveit_config/package.xml" }
+# ros-humble-openarm-hardware = { path = "./package_configs/openarm_hardware/" }
+
 
 [tasks]
-build = "colcon build --symlink-install"
+# build-openarm-can = "pixi build --path ./ros_ws/src/openarm_can"
+build = { cmd = "colcon build --symlink-install" }

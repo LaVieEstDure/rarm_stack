@@ -15,6 +15,8 @@
 cmake_minimum_required(VERSION 3.22)
 project(openarm_can VERSION 1.2.8)
 
+find_package(ament_cmake REQUIRED)
+
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -139,3 +141,5 @@ install(
 if(BUILD_TESTING)
   # add_subdirectory(test)
 endif()
+
+ament_package()
