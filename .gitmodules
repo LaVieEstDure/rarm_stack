@@ -5,5 +5,8 @@
 	path = ros_ws/src/openarm_ros2
 	url = https://github.com/enactic/openarm_ros2
 [submodule "openarm_mujoco_hardware"]
-	path = openarm_mujoco_hardware
-	url = https://github.com/enactic/openarm_mujoco
+	path = ros_ws/src/openarm_mujoco_hardware
+	url = https://github.com/enactic/openarm_mujoco_hardware/
+[submodule "ros_ws/src/rarm_osc"]
+	path = ros_ws/src/rarm_osc
+	url = https://github.com/LaVieEstDure/rarm_osc
