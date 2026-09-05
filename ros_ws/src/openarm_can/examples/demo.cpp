@@ -27,7 +27,7 @@ int main() {
 
         // Initialize OpenArm with CAN interface and enable CAN-FD
         std::cout << "Initializing OpenArm CAN..." << std::endl;
-        openarm::can::socket::OpenArm openarm("can0", true);  // Use CAN-FD on can0 interface
+        openarm::can::socket::OpenArm openarm("can0", false);  // Use CAN-FD on can0 interface
 
         // Initialize arm motors
         std::vector<openarm::damiao_motor::MotorType> motor_types = {
@@ -47,7 +47,7 @@ int main() {
         std::cout << "\n=== Enabling Motors ===" << std::endl;
         openarm.enable_all();
         // Allow time (2ms) for the motors to respond for slow operations like enabling
-        openarm.recv_all(2000);
+        openarm.recv_all(100000);
 
         // Set device mode to param and query motor id
         std::cout << "\n=== Querying Motor Recv IDs ===" << std::endl;
@@ -55,7 +55,7 @@ int main() {
         openarm.query_param_all(static_cast<int>(openarm::damiao_motor::RID::MST_ID));
         // Allow time (2ms) for the motors to respond for slow operations like querying
         // parameter from register
-        openarm.recv_all(2000);
+        openarm.recv_all(10000);
 
         // Access motors through components
         for (const auto& motor : openarm.get_arm().get_motors()) {
