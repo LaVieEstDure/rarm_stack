@@ -23,26 +23,7 @@ pkg-config = "*"
 make = "*"
 ninja = "*"
 
-# openarm deps
-# ros-humble-ament-cmake = "*"
-# ros-humble-controller-manager = "*"
-# ros-humble-gripper-controllers = "*"
-# ros-humble-hardware-interface = "*"
-# ros-humble-joint-state-broadcaster = "*"
-# ros-humble-joint-trajectory-controller = "*"
-# ros-humble-xacro = "*"
-# ros-humble-joint-state-publisher-gui = "*"
-# ros-humble-ros2-control-test-assets = "*"
-# ros-humble-moveit-configs-utils = "*"
-# ros-humble-moveit-ros-move-group = "*"
-# ros-humble-moveit-ros-visualization = "*"
-# ros-humble-moveit-planners-ompl = "*"
-# ros-humble-moveit-planners = "*"
-# ros-humble-pilz-industrial-motion-planner = "*"
-# ros-humble-moveit-ros-perception = "*"
-# ros-humble-moveit-simple-controller-manager = "*"
-
-ros-humble-openarm-can = { path = "./ros_ws/src/openarm_can/package.xml" }
+# ros-humble-openarm-can = { path = "./ros_ws/src/openarm_can/package.xml" }
 ros-humble-openarm-description = { path = "./ros_ws/src/openarm_description/package.xml" }
 ros-humble-openarm = { path = "./ros_ws/src/openarm_ros2/openarm/package.xml" }
 ros-humble-openarm-bringup = { path = "./ros_ws/src/openarm_ros2/openarm_bringup/package.xml" }
@@ -55,4 +36,4 @@ ros-humble-openarm-bimanual-moveit-config = { path = "./ros_ws/src/openarm_ros2/
 build = { cmd = "colcon build --symlink-install" }
 
 [pypi-dependencies]
-openarm-can = { path = "/home/r.mishra/projects/rarm_stack/ros_ws/src/openarm_can/python", editable = true }
+# openarm-can = { path = "./ros_ws/src/openarm_can/python", editable = true }
