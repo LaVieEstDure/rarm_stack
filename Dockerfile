@@ -4,25 +4,27 @@
 # Use the versioned pixi image instead of curl-installing an unversioned binary.
 FROM ghcr.io/prefix-dev/pixi:0.67.0 AS install
 
-WORKDIR /app/ros_ws
+WORKDIR /app
+ARG PIXI_ENVIRONMENT=default
 
-# Copy only the dependency manifests first for better layer caching.
-# Source code is not needed to install the conda/ROS environment.
+# Local Pixi source packages need their package.xml files and build sources.
 COPY ./pixi.toml ./pixi.lock ./
 
 COPY ./deps/ ./deps/
+COPY ./ros_ws/src/ ./ros_ws/src/
+COPY ./scripts/ ./scripts/
 
 # Install all conda/ROS packages. The rattler cache mount avoids re-downloading
 # packages on rebuilds (sharing=private prevents cross-build contamination).
 RUN --mount=type=cache,target=/root/.cache/rattler/cache,sharing=private \
-    pixi install
+    pixi install --environment "$PIXI_ENVIRONMENT"
 
 # Bake the environment activation into a standalone entrypoint script.
 # pixi shell-hook emits bash export statements + runs all activate.d scripts,
 # including the RoboStack one that sources ros2 setup.sh and sets ROS_DISTRO,
 # AMENT_PREFIX_PATH, etc.
 RUN printf '#!/bin/bash\n# Named volumes for colcon output are created root-owned by Docker; fix on\n# first container start (no-op once they are already writable).\n[ -w /app/ros_ws/log ] || sudo chown -R "$(id -u):$(id -g)" /app/ros_ws/build /app/ros_ws/install /app/ros_ws/log\n%s\nexec "$@"\n' \
-        "$(pixi shell-hook --shell bash)" \
+        "$(pixi shell-hook --shell bash --environment "$PIXI_ENVIRONMENT")" \
     > /entrypoint.sh \
     && chmod +x /entrypoint.sh
 
@@ -33,6 +35,7 @@ FROM ubuntu:24.04
 ARG USERNAME=rarm
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ARG PIXI_ENVIRONMENT=default
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -50,10 +53,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglx-mesa0 \
     libegl-mesa0 \
     libglu1-mesa \
-    && add-apt-repository -y ppa:openarm/main \
-    && apt-get update && apt-get install -y --no-install-recommends \
-    libopenarm-can-dev \
-    openarm-can-utils \
+    && if [ "$PIXI_ENVIRONMENT" = "hardware" ]; then \
+         add-apt-repository -y ppa:openarm/main \
+         && apt-get update \
+         && apt-get install -y --no-install-recommends libopenarm-can-dev openarm-can-utils; \
+       fi \
     && rm -rf /var/lib/apt/lists/*
 
 # Recreate non-root user. Ubuntu 24.04 ships a default `ubuntu` user at

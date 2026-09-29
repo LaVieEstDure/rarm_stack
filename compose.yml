@@ -6,6 +6,7 @@ services:
         USERNAME: rarm
         USER_UID: ${UID:-1000}
         USER_GID: ${GID:-1000}
+        PIXI_ENVIRONMENT: ${PIXI_ENVIRONMENT:-default}
     image: ros2-humble-dev:latest
     container_name: rarm_core
     network_mode: host
@@ -31,6 +32,8 @@ services:
     volumes:
       # Pixi manifests for live editing of dependencies.
       - .:/app
+      # Keep the baked Pixi environment when the source checkout is mounted.
+      - pixi_env:/app/.pixi
 
       # Colcon build artifacts in named volumes: fast rebuilds and they survive
       # container recreation without polluting the host checkout.
@@ -52,6 +55,11 @@ services:
     command: /bin/bash
 
 volumes:
+  pixi_env:
+    name: rarm_pixi_${PIXI_ENVIRONMENT:-default}
   colcon_build:
+    name: rarm_colcon_build_${PIXI_ENVIRONMENT:-default}
   colcon_install:
+    name: rarm_colcon_install_${PIXI_ENVIRONMENT:-default}
   colcon_log:
+    name: rarm_colcon_log_${PIXI_ENVIRONMENT:-default}
